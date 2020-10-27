@@ -180,7 +180,7 @@ def mse_loss_der(y_pred: Union[np.ndarray, List],
     :return: loss value
     """
 
-    mse_der_value = 2 * (y_pred - y_true)
+    mse_der_value = - 2 * (y_pred - y_true)
 
     return mse_der_value
 
