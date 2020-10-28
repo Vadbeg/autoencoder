@@ -19,10 +19,6 @@ def train_model(network: Autoencoder, dataset: BaseDataset, n_epochs: int) -> Li
         for input_values, true_prediction in dataset:
             result = network.propagate_forward(x=input_values)
 
-            # print(f'Model result: {result}')
-            # print(f'True result: {true_prediction}')
-            # print(f'-' * 5)
-
             error = network.propagate_backward(target=true_prediction)
 
             errors_epoch_list.append(error)

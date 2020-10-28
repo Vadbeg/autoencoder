@@ -4,11 +4,14 @@ import math
 from typing import Tuple
 
 from modules.train import train_model
+from modules.utils import calculate_image_compression
 from modules.network.network import Autoencoder
 from modules.data.dataset import ImageAutoencoderDataset
 from config import Config
 
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 from cv2 import cv2
 
 
@@ -46,16 +49,16 @@ def perform_pipeline():
     y_length, x_length = Config.slide_window
     num_of_nodes = y_length * x_length * 3
 
-    autoencoder = Autoencoder(lr=Config.learning_rate, momentum=0.1,
+    autoencoder = Autoencoder(lr=Config.learning_rate, momentum=0.1, adaptive_lr=Config.adaptive_lr,
                               shape=[num_of_nodes, Config.num_of_hidden_layers, num_of_nodes])
 
     dataset = ImageAutoencoderDataset(image_path=Config.image_path,
                                       image_size=Config.image_size,
                                       slide_window=Config.slide_window)
 
-    train_model(network=autoencoder, dataset=dataset, n_epochs=Config.n_epochs)
+    total_error_list = train_model(network=autoencoder, dataset=dataset, n_epochs=Config.n_epochs)
 
-    res_image = np.zeros((*Config.image_size, 3))
+    res_image = np.zeros(dataset.image.shape)
     true_image = dataset.image
 
     for idx, (input_image_flatten, true_image_flatten) in enumerate(dataset):
@@ -69,18 +72,38 @@ def perform_pipeline():
 
     res_image = np.uint8(res_image)
 
-    return res_image, true_image
+    res_image = cv2.cvtColor(res_image, cv2.COLOR_BGR2RGB)
+    true_image = cv2.cvtColor(true_image, cv2.COLOR_BGR2RGB)
+
+    compression_rate = calculate_image_compression(num_of_input_layers=num_of_nodes,
+                                                   num_of_chunks=len(dataset),
+                                                   num_of_hidden_layers=Config.num_of_hidden_layers)
+
+    return res_image, true_image, total_error_list, compression_rate
 
 
 if __name__ == '__main__':
-    res_image, true_image = perform_pipeline()
+    res_image, true_image, total_error, compression_rate = perform_pipeline()
 
-    print(f'Result: {res_image}')
+    print(f'Current compression rate of model: {compression_rate:.3f}')
 
-    print(f'Result max value: {res_image.max()}')
-    print(f'Result min value: {res_image.min()}')
-    print(f'Result avg value: {np.average(res_image)}')
+    fig, axs = plt.subplots(1, 2, figsize=(12, 8))
+    axs = axs.flatten()
+    plt.suptitle(f'Slide window: {Config.slide_window}. Number of hidden layers: {Config.num_of_hidden_layers}')
 
-    cv2.imshow('Result', res_image)
-    cv2.imshow('Original', true_image)
-    cv2.waitKey(0)
+    axs[0].imshow(res_image)
+    axs[0].set_title(f'Result image')
+
+    axs[1].imshow(true_image)
+    axs[1].set_title(f'True image')
+
+    plt.show()
+
+    # fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+    #
+    # sns.lineplot(x=list(range(len(total_error))), y=total_error, ax=ax)
+    # ax.set_title(f'Error plots')
+    # ax.set_xticklabels(f'Epoch')
+    # ax.set_yticklabels(f'Error')
+    #
+    # plt.show()

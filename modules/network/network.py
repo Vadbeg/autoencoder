@@ -12,8 +12,9 @@ from modules.network.utils import (sigmoid, sigmoid_der,
 class Autoencoder:
     """Neural network"""
 
-    def __init__(self, lr: float, momentum: float, shape: List[int]):
+    def __init__(self, momentum: float, shape: List[int], adaptive_lr: bool = False, lr: float = 0.03):
         self.lr = lr
+        self.adaptive_lr = adaptive_lr
         self.momentum = momentum
 
         self.shape = shape
@@ -71,6 +72,9 @@ class Autoencoder:
         """
 
         self.layers[0] = x
+
+        if self.adaptive_lr:
+            self.lr = 10 / (np.dot(x, x.T))
 
         for i in range(1, len(self.shape) - 1):
             self.layers[i][...] = sigmoid(

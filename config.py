@@ -1,4 +1,4 @@
-"""Module witb config"""
+"""Module with config"""
 
 
 class Config:
@@ -6,11 +6,14 @@ class Config:
     image_path = 'test_images/test3.jpg'
 
     image_size = (256, 256)
-    slide_window = (200, 200)
+    slide_window = (128, 128)
 
     num_of_hidden_layers = 64
-    learning_rate = 0.001
+    learning_rate = 0.01
+    adaptive_lr = False
 
-    n_epochs = 100
+    min_error: int = 500
+
+    n_epochs = 200
 
 
