@@ -57,7 +57,7 @@ class Autoencoder:
 
         for i in range(self.n_layers - 1):
             curr_weights = np.random.randn(self.layers[i].size,
-                                           self.layers[i + 1].size) + np.sqrt(2 / self.layers[i].size)
+                                           self.layers[i + 1].size) * np.sqrt(2 / self.layers[i].size)
 
             weights.append(curr_weights)
 
@@ -77,12 +77,20 @@ class Autoencoder:
             self.lr = 10 / (np.dot(x, x.T))
 
         for i in range(1, len(self.shape) - 1):
+            # print(f'Layer: {self.layers[i - 1]}')
+            # print(f'Weight: {self.weights[i - 1]}')
+
             self.layers[i][...] = sigmoid(
                 np.dot(self.layers[i - 1], self.weights[i - 1])
             )
 
+            # print(f'Mult: {np.dot(self.layers[i - 1], self.weights[i - 1])}')
+            # print(f'Mult sigmoid: {sigmoid(np.dot(self.layers[i - 1], self.weights[i - 1]))}')
+
         if len(self.shape) - 2 >= 0:
             last_idx = len(self.shape) - 1
+
+            # print(f'Last layer: {self.layers[last_idx - 1]}')
 
             self.layers[last_idx][...] = np.dot(self.layers[last_idx - 1], self.weights[last_idx - 1])
 
@@ -98,10 +106,20 @@ class Autoencoder:
 
         deltas = list()
 
-        cross_entropy_loss_number = mse_loss(y_pred=self.layers[-1],
+        cross_entropy_loss_number = mse_loss(y_pred=sigmoid(self.layers[-1]),
                                              y_true=target)
-        last_layer_delta = mse_loss_der(y_pred=self.layers[-1],
+
+        # print(f'Network output: {self.layers[-1]}')
+        # print(f'Network output sigmoid: {sigmoid(self.layers[-1])}')
+        # print(f'Target: {target}')
+        # print(f'-' * 15)
+
+        last_layer_delta = mse_loss_der(y_pred=sigmoid(self.layers[-1]),
                                         y_true=target)
+        # print(f'Last layer delta: {last_layer_delta}')
+        last_layer_delta = last_layer_delta * sigmoid_der(self.layers[-1])
+
+        # print(f'Last layer delta after sigmoid: {last_layer_delta}')
 
         deltas.append(last_layer_delta)
 

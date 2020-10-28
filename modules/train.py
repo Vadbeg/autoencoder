@@ -18,12 +18,17 @@ def train_model(network: Autoencoder, dataset: BaseDataset, n_epochs: int) -> Li
 
         for input_values, true_prediction in dataset:
             result = network.propagate_forward(x=input_values)
-
             error = network.propagate_backward(target=true_prediction)
+
+            # print(f'Result: {result}')
+            # print(f'-' * 15)
 
             errors_epoch_list.append(error)
 
         average_error = sum(errors_epoch_list) / len(errors_epoch_list)
+
+        # if average_error < threshold:
+        #     return total_error_list
 
         tqdm_epochs.set_postfix(
             text=f'Epochs... Average error: {sum(errors_epoch_list) / len(errors_epoch_list):.2f}'

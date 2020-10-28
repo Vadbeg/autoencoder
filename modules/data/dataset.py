@@ -102,7 +102,7 @@ class ImageAutoencoderDataset(BaseDataset):
         image_flatten = image_chunk.flatten()
         image_flatten_norm = image_chunk_norm.flatten()
 
-        return image_flatten_norm, image_flatten
+        return image_flatten_norm, image_flatten_norm
         # return image_chunk
 
     def __len__(self):
@@ -117,7 +117,7 @@ class ImageAutoencoderDataset(BaseDataset):
 
 
 if __name__ == '__main__':
-    image_path = '/test1.jpg'
+    image_path = '/home/vadbeg/Projects/University/MP3/lab1/autoencoder/test_images/test1.jpg'
 
     image_autoencoder_dataset = ImageAutoencoderDataset(image_path=image_path,
                                                         image_size=(256, 256),
