@@ -107,6 +107,8 @@ venv.bak/
 .dist/
 .news_feed.egg-info/
 
+test_images/
+
 *.jpg
 
 # mypy

@@ -117,8 +117,7 @@ class ImageAutoencoderDataset(BaseDataset):
 
 
 if __name__ == '__main__':
-    image_path = '/home/vadbeg/Projects/University/MP3' \
-                 '/lab1/autoencoder/photo_2020-10-27_20-12-26.jpg'
+    image_path = '/test1.jpg'
 
     image_autoencoder_dataset = ImageAutoencoderDataset(image_path=image_path,
                                                         image_size=(256, 256),
@@ -128,7 +127,8 @@ if __name__ == '__main__':
 
     for idx, chunk in enumerate(image_autoencoder_dataset):
         chunk = chunk[1]
-        chunk = np.resize(chunk, new_shape=(256, 256, 3))
+
+        chunk = np.resize(chunk, new_shape=(200, 200, 3))
 
         cv2.imshow(f'Image', chunk)
 
