@@ -142,17 +142,3 @@ class Autoencoder:
 
         return cross_entropy_loss_number
 
-
-if __name__ == '__main__':
-    network = Autoencoder(lr=0.01, momentum=0.1, shape=[10, 3, 10])
-
-    x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    result = network.propagate_forward(x=x)
-
-    print(f'Result: {result}')
-
-    error = network.propagate_backward(target=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-
-    print(f'Result: {result}')
-    print(f'Error: {error}')
-

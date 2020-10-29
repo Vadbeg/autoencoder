@@ -11,7 +11,6 @@ from modules.data.dataset import ImageAutoencoderDataset
 from config import Config
 
 import numpy as np
-import seaborn as sns
 import matplotlib.pyplot as plt
 from cv2 import cv2
 
@@ -83,37 +82,6 @@ def perform_pipeline():
     return res_image, true_image, total_error_list, compression_rate
 
 
-def iterations_depending_on_learning():
-    lr_list = [0.0001, 0.0003, 0.001, 0.0075, 0.01, 0.015, 0.03, 0.05, 0.09]
-    epochs_list = list()
-
-    from tqdm import tqdm
-
-    for curr_learning in tqdm(lr_list):
-        y_length, x_length = Config.slide_window
-        num_of_nodes = y_length * x_length * 3
-
-        autoencoder = Autoencoder(lr=curr_learning, momentum=0.1, adaptive_lr=Config.adaptive_lr,
-                                  shape=[num_of_nodes, Config.num_of_hidden_layers, num_of_nodes])
-
-        dataset = ImageAutoencoderDataset(image_path=Config.image_path,
-                                          image_size=Config.image_size,
-                                          slide_window=Config.slide_window)
-
-        total_error_list = train_model(network=autoencoder, dataset=dataset, n_epochs=Config.n_epochs, threshold=500)
-
-        epochs_list.append(len(total_error_list))
-
-    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
-
-    sns.lineplot(x=epochs_list, y=lr_list, ax=ax)
-    ax.set_title(f'Epoch vs LR. error threshold=500. Max number of epochs=100.'
-                 f' Slide window=(128, 128), hidden layer=64')
-    plt.xticks(text=f'Learning rate')
-    plt.yticks(text=f'Epoch')
-    plt.show()
-
-
 if __name__ == '__main__':
     res_image, true_image, total_error, compression_rate = perform_pipeline()
 
@@ -139,5 +107,3 @@ if __name__ == '__main__':
     # ax.set_yticklabels(f'Error')
     #
     # plt.show()
-
-    # iterations_depending_on_learning()

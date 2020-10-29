@@ -1,7 +1,7 @@
 """Module with dataset for autoencoder"""
 
 import math
-from typing import Tuple
+from typing import Tuple, Generator
 
 from modules.data.base_dataset import BaseDataset
 
@@ -17,10 +17,11 @@ class ImageAutoencoderDataset(BaseDataset):
                  image_size: Tuple[int, int] = None,
                  slide_window: Tuple[int, int] = (10, 10)):
         """
+        Dataset for image autoencoder netowork
 
-
-        :param image_path:
-        :param slide_window: (first value for vertical, second for horizontal)
+        :param image_path: path to the image
+        :param image_size: size of the image
+        :param slide_window: slided window which will iterate over image
         """
 
         super().__init__()
@@ -32,7 +33,13 @@ class ImageAutoencoderDataset(BaseDataset):
 
         self.slide_window = slide_window
 
-    def __get_image__(self):
+    def __get_image__(self) -> np.ndarray:
+        """
+        Reads image from give path. If self.image_size is not None, resizes image.
+
+        :return: image
+        """
+
         image = cv2.imread(self.image_path)
 
         if self.image_size:
@@ -41,12 +48,26 @@ class ImageAutoencoderDataset(BaseDataset):
         return image
 
     @staticmethod
-    def __normalize_image__(image):
+    def __normalize_image__(image) -> np.ndarray:
+        """
+        Performs image normalization
+
+        :param image: original image
+        :return: normalized image
+        """
+
         image_norm = image / 255
 
         return image_norm
 
-    def __get_image_chunk_iter__(self, image: np.ndarray):
+    def __get_image_chunk_iter__(self, image: np.ndarray) -> Generator[np.ndarray]:
+        """
+        Iterator for getting image chunks depending on self.slide_window
+
+        :param image: original image
+        :return: image chunks generator
+        """
+
         y_window, x_window = self.slide_window
 
         for i in range(0, image.shape[0], y_window):
@@ -55,7 +76,15 @@ class ImageAutoencoderDataset(BaseDataset):
 
                 yield image_chunk
 
-    def __get_image_chunk__(self, x_idx, y_idx):
+    def __get_image_chunk__(self, x_idx: int, y_idx: int) -> np.ndarray:
+        """
+        Reads image chunk by idx
+
+        :param x_idx: vertical index of chunk
+        :param y_idx: horizontal index of chunk
+        :return: image chunk by idx
+        """
+
         y_window, x_window = self.slide_window
 
         max_x = math.ceil(self.image.shape[1] / x_window)
@@ -84,7 +113,16 @@ class ImageAutoencoderDataset(BaseDataset):
 
         return image_chunk
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Gets image chunks by idx from image.
+
+        idx = y_idx * length_x + x_idx
+
+        :param idx: index of chunk
+        :return: chunk
+        """
+
         if idx >= self.__len__():
             raise StopIteration
 
@@ -105,7 +143,13 @@ class ImageAutoencoderDataset(BaseDataset):
         return image_flatten_norm, image_flatten_norm
         # return image_chunk
 
-    def __len__(self):
+    def __len__(self) -> int:
+        """
+        Calculates length of dataset
+
+        :return: length of dataset
+        """
+
         y_window, x_window = self.slide_window
 
         length_x = math.ceil(self.image.shape[1] / x_window)

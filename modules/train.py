@@ -9,6 +9,15 @@ from tqdm import tqdm
 
 
 def train_model(network: Autoencoder, dataset: BaseDataset, n_epochs: int) -> List[float]:
+    """
+    Training method for network
+
+    :param network: neural network
+    :param dataset: dataset
+    :param n_epochs: number of epochs to train
+    :return: list of errors for give all epoch
+    """
+
     tqdm_epochs = tqdm(range(n_epochs), postfix=f'Epochs...')
 
     total_error_list = list()
