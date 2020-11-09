@@ -49,7 +49,7 @@ def perform_pipeline():
     y_length, x_length = Config.slide_window
     num_of_nodes = y_length * x_length * 3
 
-    autoencoder = Autoencoder(lr=Config.learning_rate, momentum=0.1, adaptive_lr=Config.adaptive_lr,
+    autoencoder = Autoencoder(lr=Config.learning_rate, momentum=0.0, adaptive_lr=Config.adaptive_lr,
                               shape=[num_of_nodes, Config.num_of_hidden_layers, num_of_nodes])
 
     dataset = ImageAutoencoderDataset(image_path=Config.image_path,
@@ -89,7 +89,9 @@ if __name__ == '__main__':
 
     fig, axs = plt.subplots(1, 2, figsize=(12, 8))
     axs = axs.flatten()
-    plt.suptitle(f'Slide window: {Config.slide_window}. Number of hidden layers: {Config.num_of_hidden_layers}')
+    plt.suptitle(f'Slide window: {Config.slide_window}. '
+                 f'Number of hidden layers: {Config.num_of_hidden_layers}. '
+                 f'Compression rate: {compression_rate}')
 
     axs[0].imshow(res_image)
     axs[0].set_title(f'Result image')

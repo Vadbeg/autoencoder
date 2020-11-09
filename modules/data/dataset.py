@@ -1,7 +1,7 @@
 """Module with dataset for autoencoder"""
 
 import math
-from typing import Tuple, Generator
+from typing import Tuple, Generator, Iterator
 
 from modules.data.base_dataset import BaseDataset
 
@@ -60,7 +60,7 @@ class ImageAutoencoderDataset(BaseDataset):
 
         return image_norm
 
-    def __get_image_chunk_iter__(self, image: np.ndarray) -> Generator[np.ndarray]:
+    def __get_image_chunk_iter__(self, image: np.ndarray) -> Iterator[np.ndarray]:
         """
         Iterator for getting image chunks depending on self.slide_window
 

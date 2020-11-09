@@ -4,7 +4,7 @@ from typing import List, Union
 
 import numpy as np
 
-from modules.network.utils import (sigmoid, sigmoid_der,
+from modules.network.utils import (sigmoid, sigmoid_der, linear, linear_der,
                                    mse_loss,
                                    mse_loss_der)
 
@@ -80,7 +80,7 @@ class Autoencoder:
             # print(f'Layer: {self.layers[i - 1]}')
             # print(f'Weight: {self.weights[i - 1]}')
 
-            self.layers[i][...] = sigmoid(
+            self.layers[i][...] = linear(
                 np.dot(self.layers[i - 1], self.weights[i - 1])
             )
 
@@ -109,6 +109,8 @@ class Autoencoder:
         cross_entropy_loss_number = mse_loss(y_pred=sigmoid(self.layers[-1]),
                                              y_true=target)
 
+        # print(f'Loss number: {cross_entropy_loss_number}')
+
         # print(f'Network output: {self.layers[-1]}')
         # print(f'Network output sigmoid: {sigmoid(self.layers[-1])}')
         # print(f'Target: {target}')
@@ -119,22 +121,30 @@ class Autoencoder:
         # print(f'Last layer delta: {last_layer_delta}')
         last_layer_delta = last_layer_delta * sigmoid_der(self.layers[-1])
 
-        # print(f'Last layer delta after sigmoid: {last_layer_delta}')
-
         deltas.append(last_layer_delta)
 
         # TODO: add try catch clause here for negative len(self.shape) - 2
         for i in range(len(self.shape) - 2, 0, -1):
             curr_delta = np.dot(deltas[0],
-                                self.weights[i].T * sigmoid_der(self.layers[i]))
+                                self.weights[i].T * linear_der(self.layers[i]))
 
             deltas.insert(0, curr_delta)
+
+        # from pprint import pprint
+        # pprint(deltas)
+        # print(deltas[0].shape)
+        # print(deltas[1].shape)
+        # print(f'-' * 15)
 
         for i in range(len(self.weights)):
             layer = np.atleast_2d(self.layers[i])
             curr_delta = np.atleast_2d(deltas[i])
 
             curr_dw = np.dot(layer.T, curr_delta)
+
+            # print(f'Weights {i}: {self.weights[i]}')
+            # print(f'Delta {i}: {curr_dw}')
+            # print(f'-' * 15)
 
             self.weights[i] += self.lr * curr_dw + self.lr * self.momentum * self.dw[i]
 
