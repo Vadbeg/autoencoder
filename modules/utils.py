@@ -13,7 +13,6 @@ def calculate_image_compression(num_of_input_layers: int, num_of_chunks: int, nu
 
     image_compression = (num_of_input_layers * num_of_chunks) / \
                         ((num_of_input_layers + num_of_chunks) * num_of_hidden_layers + 2)
-    # image_compression = 1 / image_compression
 
     return image_compression
 
