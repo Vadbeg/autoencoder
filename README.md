@@ -22,15 +22,6 @@ pip install -r requirements.txt
 
 It will install all essential libraries
 
-### Database setup
-
-I've used MySQL database. If you want to play with this project you need to install it. 
-And then execute script in `database` folder. Like this:
-
-```
->> mysql -h hostname -u user < database/schemas.sql
-```
-
 ### Usage
 
 After libraries installation you need to adjust configs. Config is located in `config.py` file. Config example:
@@ -56,8 +47,6 @@ Now you can train network and perform tests:
 
 * Training phase you can find in `start_trainig.py` script.
 * Script with tests and plots you can find in `build_plots.py`.
-
-
 
 
 ## Built With
