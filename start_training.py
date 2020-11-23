@@ -50,7 +50,7 @@ def perform_pipeline():
     num_of_nodes = y_length * x_length * 3
 
     autoencoder = Autoencoder(lr=Config.learning_rate, momentum=0.0, adaptive_lr=Config.adaptive_lr,
-                              shape=[num_of_nodes, Config.num_of_hidden_layers, num_of_nodes])
+                              shape=[num_of_nodes, Config.num_of_hidden_neurons, num_of_nodes])
 
     dataset = ImageAutoencoderDataset(image_path=Config.image_path,
                                       image_size=Config.image_size,
@@ -75,9 +75,9 @@ def perform_pipeline():
     res_image = cv2.cvtColor(res_image, cv2.COLOR_BGR2RGB)
     true_image = cv2.cvtColor(true_image, cv2.COLOR_BGR2RGB)
 
-    compression_rate = calculate_image_compression(num_of_input_layers=num_of_nodes,
+    compression_rate = calculate_image_compression(num_of_input_neurons=num_of_nodes,
                                                    num_of_chunks=len(dataset),
-                                                   num_of_hidden_layers=Config.num_of_hidden_layers)
+                                                   num_of_hidden_neurons=Config.num_of_hidden_neurons)
 
     return res_image, true_image, total_error_list, compression_rate
 
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     fig, axs = plt.subplots(1, 2, figsize=(12, 8))
     axs = axs.flatten()
     plt.suptitle(f'Slide window: {Config.slide_window}. '
-                 f'Number of hidden layers: {Config.num_of_hidden_layers}. '
+                 f'Number of hidden neurons: {Config.num_of_hidden_neurons}. '
                  f'Compression rate: {compression_rate}')
 
     axs[0].imshow(res_image)

@@ -23,7 +23,7 @@ def perform_pipeline_for_plots():
     num_of_nodes = y_length * x_length * 3
 
     autoencoder = Autoencoder(lr=Config.learning_rate, momentum=0.0, adaptive_lr=Config.adaptive_lr,
-                              shape=[num_of_nodes, Config.num_of_hidden_layers, num_of_nodes])
+                              shape=[num_of_nodes, Config.num_of_hidden_neurons, num_of_nodes])
 
     dataset = ImageAutoencoderDataset(image_path=Config.image_path,
                                       image_size=Config.image_size,
@@ -33,9 +33,9 @@ def perform_pipeline_for_plots():
                                    n_epochs=Config.n_epochs, min_error=Config.min_error,
                                    verbose=False)
 
-    compression_rate = calculate_image_compression(num_of_input_layers=num_of_nodes,
+    compression_rate = calculate_image_compression(num_of_input_neurons=num_of_nodes,
                                                    num_of_chunks=len(dataset),
-                                                   num_of_hidden_layers=Config.num_of_hidden_layers)
+                                                   num_of_hidden_neurons=Config.num_of_hidden_neurons)
 
     return total_error_list, compression_rate
 
