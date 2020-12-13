@@ -160,8 +160,8 @@ def learning_rate_epochs_plot():
 
 
 if __name__ == '__main__':
-    compression_rate_vs_epochs_plot()
-    image_epochs_plot()
-    errors_epochs_plot()
+    # compression_rate_vs_epochs_plot()
+    # image_epochs_plot()
+    # errors_epochs_plot()
     epochs_error_for_one_training_plot()
-    learning_rate_epochs_plot()
+    # learning_rate_epochs_plot()

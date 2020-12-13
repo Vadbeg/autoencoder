@@ -63,14 +63,14 @@ def perform_pipeline():
 
     for idx, (input_image_flatten, true_image_flatten) in enumerate(dataset):
         result = autoencoder.propagate_forward(x=input_image_flatten)
-        result = sigmoid(result)
+        # result = sigmoid(result)
 
         result = result.reshape((*Config.slide_window, 3))
 
         res_image = input_part_into_res_image(res_image=res_image, image_chunk=result,
                                               idx=idx, slide_window=Config.slide_window)
 
-    res_image = np.uint8(res_image * 255)
+    res_image = np.uint8(np.clip(res_image * 255, a_min=0, a_max=255))
 
     res_image = cv2.cvtColor(res_image, cv2.COLOR_BGR2RGB)
     true_image = cv2.cvtColor(true_image, cv2.COLOR_BGR2RGB)

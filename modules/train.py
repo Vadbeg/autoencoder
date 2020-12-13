@@ -3,9 +3,18 @@
 from typing import List, Optional
 
 from modules.network.network import Autoencoder
+from modules.network.utils import mse_loss
 from modules.data.base_dataset import BaseDataset
 
 from tqdm import tqdm
+
+
+def get_error(network: Autoencoder, input_values, true_prediction):
+    result = network.propagate_forward(x=input_values)
+
+    error = mse_loss(y_pred=result, y_true=true_prediction)
+
+    return error
 
 
 def train_model(network: Autoencoder, dataset: BaseDataset,
@@ -36,19 +45,26 @@ def train_model(network: Autoencoder, dataset: BaseDataset,
             result = network.propagate_forward(x=input_values)
             error = network.propagate_backward(target=true_prediction)
 
-            errors_epoch_list.append(error)
+        for input_values, true_prediction in dataset:
+            error_value = get_error(network=network,
+                                    input_values=input_values,
+                                    true_prediction=true_prediction)
 
-        average_error = sum(errors_epoch_list) / len(errors_epoch_list)
+            errors_epoch_list.append(error_value)
 
-        if min_error and average_error < min_error:
+        # average_error = sum(errors_epoch_list) / len(errors_epoch_list)
+        total_error = sum(errors_epoch_list)
+
+        if min_error and total_error < min_error:
             return total_error_list
 
         if verbose:
             n_epochs_iter.set_postfix(
-                text=f'Epochs... Average error: {sum(errors_epoch_list) / len(errors_epoch_list):.4f}'
+                # text=f'Epochs... Average error: {sum(errors_epoch_list) / len(errors_epoch_list):.4f}'
+                text=f'Epochs... Average error: {sum(errors_epoch_list):.4f}'
             )
 
-        total_error_list.append(average_error)
+        total_error_list.append(total_error)
 
     return total_error_list
 

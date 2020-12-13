@@ -3,13 +3,13 @@
 
 class Config:
 
-    image_path = 'test_images/test2.jpg'
+    image_path = 'test_images/test7.png'
 
     image_size = (256, 256)
-    slide_window = (16, 16)
+    slide_window = (8, 8)
 
     num_of_hidden_neurons = 64
-    learning_rate = 0.001
+    learning_rate = 0.0001
     adaptive_lr = False
 
     min_error: float = 0.03
